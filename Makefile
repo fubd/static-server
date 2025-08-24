@@ -54,8 +54,7 @@ release:
 
 # 在生产服务器上拉取最新镜像并启动/更新服务
 prod-up:
-	docker pull $(IMAGE_NAME):$(TAG)
-	docker compose -f docker-compose.prod.yml up -d
+	docker compose -f docker-compose.prod.yml up -d --pull always
 
 # 关闭并清理生产环境容器
 prod-down:
