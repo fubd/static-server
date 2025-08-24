@@ -1,0 +1,18 @@
+services:
+  app:
+    # 关键：直接从镜像仓库拉取镜像，而不是本地构建
+    # 请确保 IMAGE_NAME 变量在你的环境中被设置，或者直接写死
+    image: ${IMAGE_NAME:-registry.cn-hangzhou.aliyuncs.com/fubd_own/static-server}:${TAG:-latest}
+    # 生产环境推荐，确保容器异常退出后能自动重启
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      # 持久化 uploads 目录，使用命名卷
+      - uploads_data:/usr/src/app/uploads
+    env_file:
+      - .env
+
+# 在顶层声明命名卷
+volumes:
+  uploads_data:
