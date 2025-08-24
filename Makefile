@@ -16,16 +16,16 @@ PLATFORMS = linux/amd64,linux/arm64
 
 # 这些命令保持不变，因为它们用于本地快速迭代
 dev-up:
-	docker-compose -f docker-compose.dev.yml up --build -d
+	docker compose -f docker compose.dev.yml up --build -d
 
 dev-down:
-	docker-compose -f docker-compose.dev.yml down
+	docker compose -f docker compose.dev.yml down
 
 dev-logs:
-	docker-compose -f docker-compose.dev.yml logs -f
+	docker compose -f docker compose.dev.yml logs -f
 
 dev-shell:
-	docker-compose -f docker-compose.dev.yml exec app sh
+	docker compose -f docker compose.dev.yml exec app sh
 
 # ===============================================
 #  Image Build & Release Commands (for CI/CD)
@@ -49,10 +49,10 @@ release:
 # 生产命令保持不变，因为 Docker 会自动选择正确的架构
 prod-up:
 	docker pull $(IMAGE_NAME):$(TAG)
-	docker-compose -f docker-compose.prod.yml up -d
+	docker compose -f docker compose.prod.yml up -d
 
 prod-down:
-	docker-compose -f docker-compose.prod.yml down
+	docker compose -f docker compose.prod.yml down
 
 prod-logs:
-	docker-compose -f docker-compose.prod.yml logs -f
+	docker compose -f docker compose.prod.yml logs -f
