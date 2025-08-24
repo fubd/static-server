@@ -1,5 +1,6 @@
 import {serve} from '@hono/node-server';
 import {Hono} from 'hono';
+import {cors} from 'hono/cors';
 import {Container} from 'inversify';
 import {FileUploadService, type IFileUploadService} from './services/file.service.js';
 
@@ -9,6 +10,7 @@ export const TYPES = {
 export type TYPES = typeof TYPES;
 
 const app = new Hono();
+app.use('/api/*', cors());
 
 const container = new Container();
 container.bind<IFileUploadService>(TYPES.FileUploadService).to(FileUploadService).inSingletonScope();
