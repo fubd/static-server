@@ -19,7 +19,7 @@ app.post('/api/upload', async (c) => {
 });
 
 app.get('/', (c) => {
-  return c.text('Hello Hono2!');
+  return c.text('Hello Hono1!');
 });
 
 serve(

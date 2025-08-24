@@ -1,18 +1,37 @@
+version: '3.8'
+
 services:
+  # Hono.js 应用服务 (后端)
   app:
-    # 关键：直接从镜像仓库拉取镜像，而不是本地构建
-    # 请确保 IMAGE_NAME 变量在你的环境中被设置，或者直接写死
+    # 镜像来源保持不变
     image: ${IMAGE_NAME:-registry.cn-hangzhou.aliyuncs.com/fubd_own/static-server}:${TAG:-latest}
-    # 生产环境推荐，确保容器异常退出后能自动重启
     restart: always
-    ports:
-      - "${PORT:-3000}:3000"
+
     volumes:
-      # 持久化 uploads 目录，使用命名卷
+      # 应用将上传的文件写入这个卷，Nginx 将从这里读取
       - uploads_data:/usr/src/app/uploads
     env_file:
       - .env
 
-# 在顶层声明命名卷
+  # --- 新增服务 ---
+  # Nginx 服务 (反向代理和静态文件服务器)
+  nginx:
+    # 使用官方的轻量级 Nginx 镜像
+    image: nginx:alpine
+    restart: always
+    ports:
+      # 将宿主机的 80 端口映射到 Nginx 容器的 80 端口
+      # 这是整个应用的唯一入口
+      - "${NGINX_PORT_HOST}:${NGINX_PORT_CONTAINER}"
+    volumes:
+      # 1. 挂载统一的 nginx.conf
+      - ${NGINX_CONF_HOST}:${NGINX_CONF_CONTAINER}:ro
+      # 2. 共享 uploads 卷 (虽然开发时文件会同步到本地)
+      - uploads_data:/usr/share/nginx/html/uploads
+    # 设置依赖关系，确保 app 服务启动之后再启动 Nginx
+    depends_on:
+      - app
+
+# 命名卷的声明保持不变
 volumes:
   uploads_data:
